@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { errorHandler, notFoundHandler } from './src/middleware/errorMiddleware.js';
@@ -31,6 +33,20 @@ app.use('/api/users',        userRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/categories',   categoryRoutes);
 app.use('/api/analytics',    analyticsRoutes);
+
+// --- Serve static assets in production ---
+if (process.env.NODE_ENV === 'production') {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const buildPath = path.join(__dirname, '../client/dist');
+
+  app.use(express.static(buildPath));
+
+  // Serve index.html for client-side routing, excluding API requests
+  app.get(/^(?!\/api).*$/, (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+}
 
 // --- Error handling ---
 app.use(notFoundHandler);
