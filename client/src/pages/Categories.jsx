@@ -99,6 +99,11 @@ export default function Categories() {
             <div key={i} className="skeleton h-28 rounded-2xl" />
           ))}
         </div>
+      ) : !categories.length ? (
+        <div className="glass-card p-12 text-center">
+          <p className="text-dark-400 text-lg mb-2">No categories found</p>
+          <p className="text-dark-500 text-sm">Add your first category to get started</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {categories.map((cat) => {
