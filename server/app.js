@@ -15,7 +15,19 @@ import analyticsRoutes from './src/routes/analyticsRoutes.js';
 const app = express();
 
 // --- Security & Parsing ---
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "script-src": ["'self'", "https://*.clerk.accounts.dev", "https://challenges.cloudflare.com"],
+      "connect-src": ["'self'", "https://*.clerk.accounts.dev"],
+      "img-src": ["'self'", "https://img.clerk.com", "https://*.clerk.accounts.dev"],
+      "worker-src": ["'self'", "blob:"],
+      "style-src": ["'self'", "'unsafe-inline'"],
+      "frame-src": ["https://challenges.cloudflare.com"],
+    },
+  },
+}));
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
